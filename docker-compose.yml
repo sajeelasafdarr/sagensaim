@@ -1,0 +1,24 @@
+# Local dev fallback for Sage&Saim V1.0
+# Use when you don't want to depend on a live Supabase project for local dev.
+# Run: docker compose up -d db
+# Then set in .env: LOCAL_DEV_MODE=true and LOCAL_DEV_DATABASE_URL=postgresql://sagesaim:sagesaim@localhost:5432/sagesaim
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sagesaim-db
+    environment:
+      POSTGRES_USER: sagesaim
+      POSTGRES_PASSWORD: sagesaim
+      POSTGRES_DB: sagesaim
+    ports:
+      - "5432:5432"
+    volumes:
+      - sagesaim_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sagesaim"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  sagesaim_pgdata:
